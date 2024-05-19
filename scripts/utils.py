@@ -9,7 +9,6 @@ def load_image(path,alpha=True,scale=None):
 
     if alpha:
         img = pygame.image.load(BASE_IMG_PATH + path).convert_alpha()
-        img.set_alpha(250)
     else:
 
         img = pygame.image.load(BASE_IMG_PATH + path).convert()

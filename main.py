@@ -33,11 +33,7 @@ class Game:
         while self.gamestate == Game.MAIN_MENU:
             self.display.blit(self.assets['background2'],(0,0))
 
-            option_select = pygame.Surface((180, 28))
-            option_select.fill((0, 0, 0))
 
-            option_select.set_alpha(100)
-            self.display.blit(option_select, (90, 101 + option_index * 30))
 
             Text('Crab Conservation Corps', 24, 'black', self.display, (49, 11))
             Text('Crab Conservation Corps',24,'white',self.display,(50,10))
