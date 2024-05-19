@@ -84,7 +84,7 @@ class Player:
 
     def render(self,surf,offset=(0,0)):
         surf.blit(self.animation.img(),(self.pos[0]-offset[0],self.pos[1]-offset[1]))
-        pygame.draw.rect(self.game.display, (0, 0, 255),pygame.rect.Rect(self.pos[0]-offset[0], self.pos[1]-offset[1], self.animation.img().get_width(), self.animation.img().get_height()),width=1)
+        #pygame.draw.rect(self.game.display, (0, 0, 255),pygame.rect.Rect(self.pos[0]-offset[0], self.pos[1]-offset[1], self.animation.img().get_width(), self.animation.img().get_height()),width=1)
 
     def rect(self):
 

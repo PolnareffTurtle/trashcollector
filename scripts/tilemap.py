@@ -8,13 +8,13 @@ NEIGHBOR_OFFSETS = [
     (-1,2),  (0,2),  (1,2),  (2,2), (3,2),
 ]
 
-COLLIDE_TILES = list(range(20))+list(range(22,42))+list(range(44,64))+list(range(66,86))+list(range(88,176))+list(range(184,194))+list(range(206,216))+list(range(220,560))
+COLLIDE_TILES = list(range(560))
 
-LOSE_TILES = list(range(568,576))
+LOSE_TILES = list(range(577,585))
 
-WIN_TILES = [907,908,910,911]
+WIN_TILES = [563,564,566,567]
 
-TRASH_TILES = [904,905,906,909,912]
+TRASH_TILES = [560,561,562,565,568]
 
 class Tile:
     def __init__(self,tile_index,pos):
@@ -77,6 +77,6 @@ class Tilemap:
                     if (x,y) in tilemap:
                         tile = tilemap[(x,y)]
                         surf.blit(self.game.assets['tiles'][tile.index],(tile.pos[0]*self.tile_size-offset[0],tile.pos[1]*self.tile_size-offset[1]))
-                        pygame.draw.rect(surf, 'blue', (
-                        tile.pos[0] * self.tile_size - offset[0], tile.pos[1] * self.tile_size - offset[1],
-                        self.tile_size, self.tile_size), 1)
+                        #pygame.draw.rect(surf, 'blue', (
+                        #tile.pos[0] * self.tile_size - offset[0], tile.pos[1] * self.tile_size - offset[1],
+                        #self.tile_size, self.tile_size), 1)
