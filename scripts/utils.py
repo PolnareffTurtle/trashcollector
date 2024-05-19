@@ -9,6 +9,7 @@ def load_image(path,alpha=True,scale=None):
 
     if alpha:
         img = pygame.image.load(BASE_IMG_PATH + path).convert_alpha()
+        img.set_alpha(250)
     else:
 
         img = pygame.image.load(BASE_IMG_PATH + path).convert()
@@ -46,7 +47,7 @@ class Animation:
 #Text can instantly render text if "surf" and "pos" is provided, otherwise it also has a render function
 class Text:
     def __init__(self,text,size,color,surf=None,pos=None):
-        self.font = pygame.font.Font('arial',size)
+        self.font = pygame.font.SysFont('Arial',size)
         self.image = self.font.render(text,False,color)
         if surf and pos:
             surf.blit(self.image,pos)
