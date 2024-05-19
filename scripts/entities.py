@@ -56,6 +56,10 @@ class Player:
         for rect in rects['lose']:
             if self_rect.collidepoint(rect.center):
                 self.game.gamestate = self.game.LOSE
+        for rect in rects['trash']:
+            if self_rect.colliderect(rect):
+                self.game.trash_current_level += 1
+                del tilemap.tilemaps[tilemap.main_layer][(rect.x//tilemap.tile_size,rect.y//tilemap.tile_size)]
 
         if self.collisions['up'] or self.collisions['down']:
             self.velocity[1] = 0
