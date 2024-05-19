@@ -21,17 +21,20 @@ class Game:
         pygame.display.set_caption('Crab Conservation Corps')
         self.display = pygame.Surface((360, 240))
         self.clock = pygame.time.Clock()
-        self.gamestate = Game.MAIN_MENU
+        self.gamestate = Game.LEVEL_SELECT
         self.assets = {
             'player_walk': Animation(load_images('player/walk'),5), #TODO: add the new player image
             'background': load_image('bestbackground.png'),
             'background2': load_image('gradient.png'),
             'tiles': load_images('tiles/0_yellow')+load_images('tiles/1_blue')+load_images('tiles/2_spike')+
-                     load_images('tiles/3_rock')+load_images('tiles/4_grass')+load_images('tiles/5_tree'),
+                     load_images('tiles/3_rock')+load_images('tiles/4_grass')+load_images('tiles/5_tree')+load_images('tiles/6_trash'),
         }
+        print(len(self.assets['tiles']))
 
 
         self.level = 1
+        self.trash = [0,0,0,0,0,0]
+
 
     def main_menu(self):
         option_index = 0
@@ -43,13 +46,18 @@ class Game:
             Text('CRAB CONSERVATION CORPS',100,'white',self.display,(-500,-500),30,alpha=100)
             Text('ATION', 100, 'white', self.display, (60, 65), 30, alpha=100)
 
+            pygame.draw.rect(self.display, 'white', (134, 132 + (option_index % 3) * 34, 300, 34), 0)
+
             Text('Crustacean', 30, 'black', self.display, (20, 11))
             Text('Conservation', 30, 'black', self.display, (20, 41))
             Text('Corps', 30, 'black', self.display, (20, 71))
 
-            Text('Play',30,'black',self.display,(159,101))
-            Text('Levels', 30, 'black', self.display, (149, 131))
-            Text('Options', 30, 'black', self.display, (143, 161))
+            Text('Play',30,'black',self.display,(160,130))
+            Text('Levels', 30, 'black', self.display, (160, 164))
+            Text('Options', 30, 'black', self.display, (160, 198))
+
+            #Text('V', 20, 'black', self.display, (134, 136 + (option_index % 3) * 34), 90)
+
 
 
             for event in pygame.event.get():
@@ -72,6 +80,43 @@ class Game:
                 self.clock.tick(60)
                 pygame.display.update()
                 self.screen.blit(pygame.transform.scale(self.display,self.screen.get_size()),(0,0))
+
+    def level_select(self):
+        option_index = 0
+        while self.gamestate == Game.LEVEL_SELECT:
+            self.display.blit(self.assets['background2'],(0,0))
+
+            Text('1       2       3',30,'black',self.display,(90,40))
+            Text('4       5       6', 30, 'black', self.display, (90, 100))
+
+            Text('V', 20, 'black', self.display, (62 + (option_index % 3) * 80, 50 + (option_index // 3) * 60),90)
+            #Text('>', 15, 'black', self.display, (90 + (option_index % 3) * 72, 28 + (option_index // 3) * 40))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_UP:
+                        option_index = (option_index-3)%6
+                    elif event.key == pygame.K_DOWN:
+                        option_index = (option_index+3)%6
+                    elif event.key == pygame.K_LEFT:
+                        option_index = (option_index-1)%6
+                    elif event.key == pygame.K_RIGHT:
+                        option_index = (option_index+1)%6
+                    elif event.key == pygame.K_RETURN:
+                        self.level = option_index+1
+                        self.gamestate = Game.GAME_MENU
+                        break
+                    elif event.key == pygame.K_ESCAPE:
+                        self.gamestate = Game.MAIN_MENU
+                        break
+
+            if self.gamestate == Game.LEVEL_SELECT:
+                self.clock.tick(60)
+                pygame.display.update()
+                self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 
     def game_menu(self):
         while self.gamestate == Game.GAME_MENU:
@@ -100,6 +145,8 @@ class Game:
         self.scroll = [self.player.rect().centerx - self.display.get_width() / 2,
                        self.player.rect().centery - self.display.get_height() / 2]
         self.tilemap = Tilemap(self, self.level)
+
+        self.trash_current_level = 0
 
 
         while self.gamestate == Game.GAME_RUNNING:
@@ -144,6 +191,8 @@ class Game:
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 
     def win(self):
+        self.trash[self.level-1] = max(self.trash_current_level,self.trash[self.level-1]) #add to the trash if it is greater
+        print(self.trash)
         if self.level <6:
             self.level += 1
             self.gamestate = Game.GAME_MENU
@@ -158,6 +207,8 @@ class Game:
             self.display = pygame.Surface((360, 240))
             if self.gamestate == Game.MAIN_MENU:
                 self.main_menu()
+            elif self.gamestate == Game.LEVEL_SELECT:
+                self.level_select()
             elif self.gamestate == Game.GAME_RUNNING:
                 self.game_running()
             elif self.gamestate == Game.GAME_MENU:

@@ -12,7 +12,9 @@ COLLIDE_TILES = list(range(20))+list(range(22,42))+list(range(44,64))+list(range
 
 LOSE_TILES = list(range(568,576))
 
-WIN_TILES = None
+WIN_TILES = [907,908,910,911]
+
+TRASH_TILES = [904,905,906,909,912]
 
 class Tile:
     def __init__(self,tile_index,pos):
@@ -54,7 +56,7 @@ class Tilemap:
         return tiles
 
     def physics_rects_around(self,pos):
-        physics_rects = {'collide':[],'win':[],'lose':[]}
+        physics_rects = {'collide':[],'win':[],'lose':[],'trash':[]}
         for tile in self.tiles_around(pos):
             tile_rect = pygame.rect.Rect(tile.pos[0]*self.tile_size,tile.pos[1]*self.tile_size,self.tile_size,self.tile_size)
             if tile.index in COLLIDE_TILES:
@@ -64,6 +66,8 @@ class Tilemap:
                 physics_rects['win'].append(tile_rect)
             elif tile.index in LOSE_TILES:
                 physics_rects['lose'].append(tile_rect)
+            elif tile.index in TRASH_TILES:
+                physics_rects['trash'].append(tile_rect)
         return physics_rects
 
     def render(self,surf,offset=(0,0)):
