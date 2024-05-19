@@ -45,9 +45,14 @@ class Animation:
 
 #Text can instantly render text if "surf" and "pos" is provided, otherwise it also has a render function
 class Text:
-    def __init__(self,text,size,color,surf=None,pos=None):
-        self.font = pygame.font.SysFont('Arial',size)
+    def __init__(self,text,size,color,surf=None,pos=None,rotate=None,alpha=None):
+        self.font = pygame.font.Font('data/fonts/ka1.ttf',size)
         self.image = self.font.render(text,False,color)
+        if rotate:
+            self.image = pygame.transform.rotate(self.image,rotate)
+        if alpha:
+            self.image.convert_alpha()
+            self.image.set_alpha(alpha)
         if surf and pos:
             surf.blit(self.image,pos)
     def render(self,surf,pos):

@@ -21,8 +21,10 @@ class Game:
         self.gamestate = Game.MAIN_MENU
         self.assets = {
             'player_walk': Animation(load_images('player/walk'),5), #TODO: add the new player image
-            'background': load_image('beach.png'),
-            'background2': load_image('beach2.png')
+            'background': load_image('bestbackground.png'),
+            'background2': load_image('gradient.png'),
+            'tiles': load_images('tiles/0_yellow')+load_images('tiles/1_blue')+load_images('tiles/2_spike')+
+                     load_images('tiles/3_rock')+load_images('tiles/4_grass')+load_images('tiles/5_tree'),
         }
 
         self.player = Player(self,(100,-100))
@@ -32,18 +34,22 @@ class Game:
         option_index = 0
         while self.gamestate == Game.MAIN_MENU:
             self.display.blit(self.assets['background2'],(0,0))
+            Text('CONSERVATION CORPS', 100, 'white', self.display, (-50, -720), 30,alpha=100)
 
+            Text('CRAB CONSERVATION CORPS',100,'white',self.display,(-500,-500),30,alpha=100)
+            Text('ATION', 100, 'white', self.display, (60, 65), 30, alpha=100)
 
+            Text('Crustacean', 30, 'black', self.display, (20, 11))
+            Text('Conservation', 30, 'black', self.display, (20, 41))
+            Text('Corps', 30, 'black', self.display, (20, 71))
+            #Text('Crab Conservation Corps',24,'white',self.display,(50,10))
 
-            Text('Crab Conservation Corps', 24, 'black', self.display, (49, 11))
-            Text('Crab Conservation Corps',24,'white',self.display,(50,10))
-
-            Text('Play',24,'black',self.display,(159,101))
-            Text('Play', 24, 'white', self.display, (160, 100))
-            Text('Levels', 24, 'black', self.display, (149, 131))
-            Text('Levels', 24, 'white', self.display, (150, 130))
-            Text('Options', 24, 'black', self.display, (143, 161))
-            Text('Options', 24, 'white', self.display, (144, 160))
+            Text('Play',30,'black',self.display,(159,101))
+            #Text('Play', 24, 'white', self.display, (160, 100))
+            Text('Levels', 30, 'black', self.display, (149, 131))
+            #Text('Levels', 24, 'white', self.display, (150, 130))
+            Text('Options', 30, 'black', self.display, (143, 161))
+            #Text('Options', 24, 'white', self.display, (144, 160))
 
 
             for event in pygame.event.get():
