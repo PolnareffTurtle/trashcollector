@@ -16,7 +16,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.gamestate = Game.MAIN_MENU
         self.assets = {
-            'player': load_image('gojo.png') #TODO: add the new player image
+            'player': load_image('player/gojo.png') #TODO: add the new player image
         }
 
         self.player = Player(self,(100,-100))

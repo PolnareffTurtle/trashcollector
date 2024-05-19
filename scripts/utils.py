@@ -1,7 +1,7 @@
 import pygame
 import os
 
-BASE_IMG_PATH = 'graphics/'
+BASE_IMG_PATH = 'data/graphics/'
 
 
 #this just loads the image
