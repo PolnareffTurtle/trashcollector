@@ -2,6 +2,7 @@ import pygame
 from sys import exit
 from scripts.utils import Text,load_image,load_images,Animation
 from scripts.entities import Player
+from scripts.tilemap import Tilemap
 
 class Game:
 
@@ -11,6 +12,8 @@ class Game:
     LEVEL_SELECT = 2
     OPTIONS = 3
     GAME_MENU = 4
+    WIN = 5
+    LOSE = 6
 
     def __init__(self):
         pygame.init()
@@ -27,11 +30,12 @@ class Game:
                      load_images('tiles/3_rock')+load_images('tiles/4_grass')+load_images('tiles/5_tree'),
         }
 
-        self.player = Player(self,(100,-100))
+
+        self.level = 1
 
     def main_menu(self):
-        #self.background = pygame.Surface((1080,720))
         option_index = 0
+
         while self.gamestate == Game.MAIN_MENU:
             self.display.blit(self.assets['background2'],(0,0))
             Text('CONSERVATION CORPS', 100, 'white', self.display, (-50, -720), 30,alpha=100)
@@ -42,14 +46,10 @@ class Game:
             Text('Crustacean', 30, 'black', self.display, (20, 11))
             Text('Conservation', 30, 'black', self.display, (20, 41))
             Text('Corps', 30, 'black', self.display, (20, 71))
-            #Text('Crab Conservation Corps',24,'white',self.display,(50,10))
 
             Text('Play',30,'black',self.display,(159,101))
-            #Text('Play', 24, 'white', self.display, (160, 100))
             Text('Levels', 30, 'black', self.display, (149, 131))
-            #Text('Levels', 24, 'white', self.display, (150, 130))
             Text('Options', 30, 'black', self.display, (143, 161))
-            #Text('Options', 24, 'white', self.display, (144, 160))
 
 
             for event in pygame.event.get():
@@ -61,10 +61,11 @@ class Game:
                         option_index = (option_index - 1) % 3
                     elif event.key == pygame.K_DOWN:
                         option_index = (option_index + 1) % 3
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:
-                        self.gamestate = [Game.GAME_RUNNING, Game.LEVEL_SELECT, Game.OPTIONS][option_index]
+                    elif event.key == pygame.K_RETURN:
+                        self.gamestate = [Game.GAME_MENU, Game.LEVEL_SELECT, Game.OPTIONS][option_index]
                         break
+
+
 
 
             if self.gamestate == Game.MAIN_MENU:
@@ -72,15 +73,46 @@ class Game:
                 pygame.display.update()
                 self.screen.blit(pygame.transform.scale(self.display,self.screen.get_size()),(0,0))
 
+    def game_menu(self):
+        while self.gamestate == Game.GAME_MENU:
+            self.display.blit(self.assets['background2'],(0,0))
+            Text('testing',30,'black',self.display,(30,30))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_ESCAPE:
+                        self.gamestate = Game.MAIN_MENU
+                        break
+                    else:
+                        self.gamestate = Game.GAME_RUNNING
+                        break
+
+            self.clock.tick(60)
+            pygame.display.update()
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
+
     def game_running(self):
+        self.player = Player(self, (100, 0))
         self.movement = [False, False]
+        self.scroll = [self.player.rect().centerx - self.display.get_width() / 2,
+                       self.player.rect().centery - self.display.get_height() / 2]
+        self.tilemap = Tilemap(self, self.level)
 
 
         while self.gamestate == Game.GAME_RUNNING:
-            self.display.blit(self.assets['background'],(0,0)) #TODO: change this to the background image
+            #scroll is for the camera, slowly locks into the player as the center
+            self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 10
+            self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 10
+            self.render_scroll = [int(self.scroll[0]), int(self.scroll[1])]
 
-            self.player.update((self.movement[1]-self.movement[0],0))
-            self.player.render(self.display)
+            self.display.blit(self.assets['background'],(0,0))
+
+            self.tilemap.render(self.display, offset=self.render_scroll)
+            self.player.update(self.tilemap,(self.movement[1]-self.movement[0],0))
+            self.player.render(self.display,offset=self.render_scroll)
 
             #player keyboard input
             for event in pygame.event.get():
@@ -94,23 +126,32 @@ class Game:
                         self.movement[1] = True
                     if event.key in [pygame.K_UP, pygame.K_w, pygame.K_SPACE]:
                         self.player.jump()
-                    if event.key == pygame.K_ESCAPE:
-                        self.gamestate = Game.MAIN_MENU
-                        break
+
 
                 if event.type == pygame.KEYUP:
                     if event.key in [pygame.K_LEFT, pygame.K_a]:
                         self.movement[0] = False
                     if event.key in [pygame.K_RIGHT, pygame.K_d]:
                         self.movement[1] = False
-                    if event.key == pygame.K_j:
-                        self.player.shift = 0
-
-
+                    if event.key == pygame.K_ESCAPE:
+                        self.gamestate = Game.MAIN_MENU
+                        break
+                    if event.key == pygame.K_r:
+                        self.gamestate = Game.GAME_MENU
 
             self.clock.tick(60)
             pygame.display.update()
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
+
+    def win(self):
+        if self.level <6:
+            self.level += 1
+            self.gamestate = Game.GAME_MENU
+        elif self.level == 6:
+            self.gamestate = Game.MAIN_MENU
+
+    def lose(self):
+        self.gamestate = Game.GAME_MENU
 
     def run(self):
         while True:
@@ -119,6 +160,12 @@ class Game:
                 self.main_menu()
             elif self.gamestate == Game.GAME_RUNNING:
                 self.game_running()
+            elif self.gamestate == Game.GAME_MENU:
+                self.game_menu()
+            elif self.gamestate == Game.LOSE:
+                self.lose()
+            elif self.gamestate == Game.WIN:
+                self.win()
 
 if __name__ == '__main__':
     game = Game()
