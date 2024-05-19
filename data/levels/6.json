@@ -78,31 +78,31 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"sand.tsx"
+         "source":"..\/..\/..\/Downloads\/sand.tsx"
         }, 
         {
          "firstgid":221,
-         "source":"blue.tsx"
+         "source":"..\/..\/..\/Downloads\/blue.tsx"
         }, 
         {
          "firstgid":561,
-         "source":"blue_trees.tsx"
+         "source":"..\/..\/..\/Downloads\/blue_trees.tsx"
         }, 
         {
          "firstgid":577,
-         "source":"rocks.tsx"
+         "source":"..\/..\/..\/Downloads\/rocks.tsx"
         }, 
         {
          "firstgid":625,
-         "source":"trash All.tsx"
+         "source":"..\/..\/..\/Downloads\/trash All.tsx"
         }, 
         {
          "firstgid":634,
-         "source":"trees.tsx"
+         "source":"..\/..\/..\/Downloads\/trees.tsx"
         }, 
         {
          "firstgid":850,
-         "source":"grass.tsx"
+         "source":"..\/..\/..\/Downloads\/grass.tsx"
         }],
  "tilewidth":16,
  "type":"map",
