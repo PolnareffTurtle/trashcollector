@@ -13,7 +13,7 @@ class Player:
     #this part is for detecting player movement/collisions/interactions
     def update(self,tilemap,movement=(0,0)): #"movement" is player input from keyboard
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
-        frame_movement = [2*movement[0]+self.velocity[0],2*movement[1]+self.velocity[1]] #velocity is for jumping
+        frame_movement = [3*movement[0]+self.velocity[0],3*movement[1]+self.velocity[1]] #velocity is for jumping
         rects = tilemap.physics_rects_around(self.pos)
 
         self.pos[1] += frame_movement[1] #this is checking frame movement for vertical movement first

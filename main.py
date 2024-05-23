@@ -4,6 +4,7 @@ from scripts.utils import Text,load_image,load_images,Animation
 from scripts.entities import Player
 from scripts.tilemap import Tilemap
 from scripts.texts import texts
+import asyncio
 
 class Game:
 
@@ -22,7 +23,7 @@ class Game:
         pygame.display.set_caption('Crustacean Conservation Corps')
         self.display = pygame.Surface((360, 240))
         self.clock = pygame.time.Clock()
-        self.gamestate = Game.LEVEL_SELECT
+        self.gamestate = Game.MAIN_MENU
         self.trash_current_level=0
         self.option_index = [0, 0]
         self.option = 0
@@ -31,16 +32,22 @@ class Game:
             'player_walk': Animation(load_images('player/walk'),5), #TODO: add the new player image
             'background': load_image('bestbackground.png'),
             'background2': load_image('gradient.png'),
-            'tiles': load_images('tiles/1_blue')+load_images('tiles/0_yellow')+load_images('tiles/6_trash')+load_images('tiles/2_spike')+load_images('tiles/4_grass')+
-                     load_images('tiles/5_tree')+load_images('tiles/3_rock'),
+            'tiles': {
+                'blue':load_images('tiles/blue'),
+                'yellow':load_images('tiles/yellow'),
+                'trash':load_images('tiles/trash'),
+                'spike':load_images('tiles/spike'),
+                'grass':load_images('tiles/grass'),
+                'tree': load_images('tiles/tree'),
+                'rock':load_images('tiles/rock')
+            },
         }
 
-        print(len(self.assets['tiles']))
 
 
         self.level = 1
         self.trash = [0,0,0,0,0,0]
-        self.total_trash = [10,10,10,10,10,10]
+        self.total_trash = [5,13,10,10,10,10]
 
 
     def main_menu(self):
@@ -63,6 +70,10 @@ class Game:
             Text('Play',30,'black',self.display,(160,130))
             Text('Levels', 30, 'black', self.display, (160, 164))
             Text('Options', 30, 'black', self.display, (160, 198))
+
+            Text(str(sum(self.trash)) + ' out of ' + str(sum(self.total_trash)),10,'black',self.display,(20,160))
+            Text('total trash',10,'black',self.display,(20,175))
+            Text('collected', 10, 'black', self.display, (20, 190))
 
             #Text('V', 20, 'black', self.display, (134, 136 + (option_index % 3) * 34), 90)
 
@@ -88,6 +99,8 @@ class Game:
                 self.clock.tick(60)
                 pygame.display.update()
                 self.screen.blit(pygame.transform.scale(self.display,self.screen.get_size()),(0,0))
+
+                #await asyncio.sleep(0)
 
     def level_select(self):
         option_index = 0
@@ -198,11 +211,14 @@ class Game:
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
 
     def game_running(self):
-        self.player = Player(self, (100, 0))
+        player_pos = [(100, 0),(100, 500),(100, 0),(100, 0),(100, 0),(100, 0)]
+        self.player = Player(self, player_pos[self.level-1])
         self.movement = [False, False]
         self.scroll = [self.player.rect().centerx - self.display.get_width() / 2,
                        self.player.rect().centery - self.display.get_height() / 2]
         self.tilemap = Tilemap(self, self.level)
+
+
 
         self.trash_current_level = 0
 
